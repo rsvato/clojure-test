@@ -2,6 +2,8 @@
   (:use [clojure.string :only [index-of join]])
 )
 
+; https://en.wikipedia.org/wiki/The_Alphabet_Cipher
+
 (def alphabet "abcdefghijklmnopqrstuvwxyz")
 
 (defn line
