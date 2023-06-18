@@ -48,19 +48,16 @@
     )))
 )
 
-(defn decode[key message]
-  (let [k (align key message)]
-    (let [lines (map vector message k)]
-      (let [result (map decode-letter lines)] (join result))
-      )
-    )
+(defn process [key message func]
+  (process message key decode-letter)
+  ;(let [k (align key message)]
+  ;  (let [lines (map vector message k)]
+  ;    (let [result (map decode-letter lines)] (join result))
+  ;    )
+  ;  )
 )
 
 (defn encode [key message]
-  (let [k (align key message)]
-    (let [lines (map vector message k)]
-      (let [result (map encode-letter lines)] (join result))
-      )
-    )
+  (process key message encode-letter)
 )
 
