@@ -4,7 +4,7 @@
 
 ; https://en.wikipedia.org/wiki/The_Alphabet_Cipher
 
-(def alphabet "abcdefghijklmnopqrstuvwxyz")
+(def alphabet "abcdefghijklmnopqrstuvwxyz ")
 
 (defn line
   [letter]
@@ -34,6 +34,13 @@
   (full-key key (count message))
 )
 
+(defn align-incorporate
+  [key message]
+  (let [full (str key message)] full
+       (let [result (subs full 0 (count message))] result
+       ))
+)
+
 (defn encode-letter
   [vec]
   (let [specimen (line "a") subst (line (second vec))]
@@ -42,7 +49,7 @@
     )))
 )
 
-(defn decode-letter 
+(defn decode-letter
   [vec]
   (let [subst (line "a") specimen (line (second vec))]
     (let [initial (index-of specimen (first vec))]
