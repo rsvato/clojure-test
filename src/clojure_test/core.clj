@@ -73,3 +73,14 @@
     (process k message encode-letter))
 )
 
+(defn autokey-encode [agreed-key message]
+  (let [k (align-incorporate agreed-key message)]
+    (process k message encode-letter))
+)
+
+(defn autokey-decode [agreed-key message]
+  ; TODO don't align key. For the first letters use key,
+  ; after - letters just after key. 
+  ; see https://en.wikipedia.org/wiki/Autokey_cipher
+)
+
