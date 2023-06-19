@@ -3,6 +3,7 @@
 )
 
 ; https://en.wikipedia.org/wiki/The_Alphabet_Cipher
+; https://en.wikipedia.org/wiki/Autokey_cipher
 
 (def alphabet "abcdefghijklmnopqrstuvwxyz ")
 
@@ -63,12 +64,12 @@
     )
 )
 
-(defn decode [key message]
+(defn carroll-decode [key message]
   (let [k (align key message)]
     (process k message decode-letter))
 )
 
-(defn encode [key message]
+(defn caroll-encode [key message]
   (let [k (align key message)]
     (process k message encode-letter))
 )
@@ -78,9 +79,38 @@
     (process k message encode-letter))
 )
 
+(defn chunks [message key-size]
+  ; can be replaced with partition-all
+  (let [limit (count message)]
+    (loop [start 0 result []]
+      (let [tentavive-end (+ start key-size)]
+        (if (> tentavive-end limit)
+          (if (= start limit)
+            result
+            (conj result (subs message start limit)))
+          (let [res (conj result (subs message start tentavive-end))]
+            (recur (+ start key-size) res))
+          )
+        )
+      )
+    )
+  )
+
 (defn autokey-decode [agreed-key message]
-  ; TODO don't align key. For the first letters use key,
-  ; after - letters just after key. 
-  ; see https://en.wikipedia.org/wiki/Autokey_cipher
-)
+  (let [
+        k (conj nil agreed-key)
+        c (chunks message (count agreed-key))
+        ]
+    (loop [chunks c keys k deciphered []]
+      (if (= 0 (count chunks))
+        (join deciphered)
+        (let [
+              key (first keys)
+              new-key (process key (first chunks) decode-letter)
+              ]
+          (recur (rest chunks) (conj keys new-key) (conj deciphered new-key))
+          )
+      )
+)))
+
 
