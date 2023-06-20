@@ -6,6 +6,7 @@
 ; https://en.wikipedia.org/wiki/Autokey_cipher
 
 (def alphabet "abcdefghijklmnopqrstuvwxyz ")
+(def alphabet-size (count alphabet))
 
 (defn line
   [letter]
@@ -14,6 +15,38 @@
          (str tail head)
        ))
 )
+
+(defn letter-at
+  [pos]
+  (nth alphabet pos))
+
+(defn rot
+  [letter cnt fun]
+  (let [
+        pos (index-of alphabet letter)
+        new-pos (fun pos cnt)
+        ]
+        (mod (fun pos cnt) alphabet-size))
+)
+
+(defn rot-to-base
+  [letter new-base]
+  (let [
+        base-pos (index-of alphabet new-base)
+        ]
+    (letter-at (rot letter base-pos +))
+  )
+)
+
+(defn unrot-to-base
+  [letter new-base]
+  (let [
+        base-pos (index-of alphabet new-base)
+        ]
+    (letter-at (rot letter base-pos -))
+  )
+)
+
 
 (defn expand-key
   [key length]
@@ -57,6 +90,16 @@
     )
 )
 
+(defn rot-vector
+  [vec]
+  (rot-to-base (first vec) (second vec))
+)
+
+(defn unrot-vector
+  [vec]
+  (unrot-to-base (first vec) (second vec))
+)
+
 (defn decode-letter
   [vec]
   (let [subst (line "a") specimen (line (second vec))]
@@ -72,17 +115,17 @@
 
 (defn carroll-decode [key message]
   (let [k (align key message)]
-    (process k message decode-letter))
+    (process k message unrot-vector))
 )
 
 (defn carroll-encode [key message]
   (let [k (align key message)]
-    (process k message encode-letter))
+    (process k message rot-vector))
 )
 
 (defn autokey-encode [agreed-key message]
   (let [k (align-incorporate agreed-key message)]
-    (process k message encode-letter))
+    (process k message rot-vector))
 )
 
 (defn chunks [message key-size]
@@ -112,7 +155,7 @@
         (join deciphered)
         (let [
               key (first keys)
-              new-key (process key (first chunks) decode-letter)
+              new-key (process key (first chunks) unrot-vector)
               ]
           (recur (rest chunks) (conj keys new-key) (conj deciphered new-key))
           )
