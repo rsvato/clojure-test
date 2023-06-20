@@ -42,20 +42,26 @@
        ))
 )
 
+(defn encoder
+  [letter orig-alphabet subst-alphabet]
+  (let
+      [initial (index-of orig-alphabet letter)
+       result (nth subst-alphabet initial)]
+    result)
+)
+
 (defn encode-letter
   [vec]
   (let [specimen (line "a") subst (line (second vec))]
-    (let [initial (index-of specimen (first vec))]
-      (let [result (nth subst initial)] result
-    )))
+    (encoder (first vec) specimen subst)
+    )
 )
 
 (defn decode-letter
   [vec]
   (let [subst (line "a") specimen (line (second vec))]
-    (let [initial (index-of specimen (first vec))]
-      (let [result (nth subst initial)] result
-    )))
+    (encoder (first vec) specimen subst)
+  )
 )
 
 (defn process [key message func]
@@ -69,7 +75,7 @@
     (process k message decode-letter))
 )
 
-(defn caroll-encode [key message]
+(defn carroll-encode [key message]
   (let [k (align key message)]
     (process k message encode-letter))
 )
