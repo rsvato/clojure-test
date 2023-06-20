@@ -1,5 +1,5 @@
 (ns clojure-test.core
-  (:use [clojure.string :only [index-of join]])
+  (:use [clojure.string :only [index-of join lower-case upper-case]])
 )
 
 ; https://en.wikipedia.org/wiki/The_Alphabet_Cipher
@@ -115,17 +115,17 @@
 
 (defn carroll-decode [key message]
   (let [k (align key message)]
-    (process k message unrot-vector))
+    (process k (lower-case message) unrot-vector))
 )
 
 (defn carroll-encode [key message]
   (let [k (align key message)]
-    (process k message rot-vector))
+    (upper-case (process k (lower-case message) rot-vector)))
 )
 
 (defn autokey-encode [agreed-key message]
   (let [k (align-incorporate agreed-key message)]
-    (process k message rot-vector))
+    (upper-case (process (lower-case k) (lower-case message) rot-vector)))
 )
 
 (defn chunks [message key-size]
